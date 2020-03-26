@@ -1,0 +1,9 @@
+*.pdf
+*.root
+*.log
+
+data
+
+jkaspar.cc
+
+make_per_fill_json

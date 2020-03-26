@@ -1,0 +1,191 @@
+#!/bin/bash
+
+topDir=`pwd -P`
+
+dataDir="data"
+
+resetBuffers="0"
+
+#----------------------------------------------------------------------------------------------------
+
+function GetInputFiles()
+{
+	local dataset="$1"
+	local json="$2"
+	local output="$3"
+
+	# compile list of runs
+	local run_list=""
+	for run in `cat "$json" | grep -Po '".*?"' | sed 's/"//g'`
+	do
+		if [ -n "$run_list" ]
+		then
+			run_list="$run_list,"
+		fi
+
+		run_list="$run_list$run"
+	done
+
+	# run search
+	echo "* dasgoclient -query \"file dataset=$dataset run in [$run_list]\""
+
+	dasgoclient -query "file dataset=$dataset run in [$run_list]" > "$output"
+}
+
+#----------------------------------------------------------------------------------------------------
+
+function ProcessOneDataset()
+{
+	local dataset="$1"
+
+	local stream="${dataset#*/}"
+	stream="${stream%%/*}"
+
+	local era="${dataset#*Run}"
+	era="${era%%-*}"
+
+	echo "* $stream, $era"
+
+	cd "$topDir"
+
+	# make output directory
+	mkdir -p "$dataDir/$era/$stream"
+	cd "$dataDir/$era/$stream"
+
+	streamd=`pwd -P`
+
+	# get run numbers
+	if [ "$resetBuffers" == "1" ] || [ ! -s "runs" ]
+	then
+		dasgoclient -query "run dataset=$dataset" > "runs"
+	fi
+
+	# make per-fill JSON files
+	"$topDir/make_per_fill_json" "runs"
+
+	# make per-fill directory and get list of input files
+	for f in fill_*.json
+	do
+		fill=${f#fill_}
+		fill=${fill%.json}
+
+		fd="fill_$fill"
+
+		mkdir -p "$fd"
+		mv "$f" "$fd/selection.json"
+
+		if [ "$resetBuffers" == "1" ] || [ ! -s "$fd/files" ]
+		then
+			GetInputFiles "$dataset" "$fd/selection.json" "$fd/files"
+		fi
+	done
+
+	# make per-config directories and jobs
+	for fd in fill_*
+	do
+		fill=${fd#fill_}
+
+		# prepare input_commands
+		echo "" > "$fd/input_file_commands"
+		for file in `cat $fd/files`
+		do
+			echo "process.source.fileNames.append(\"$file\")" >> "$fd/input_file_commands"
+		done
+
+		# loop over configs
+		for cfg in ${configs[*]}
+		do
+			tag=${cfg%%,*}
+			cfg=${cfg#*,}
+			xangle_min=${cfg%%,*}
+			cfg=${cfg#*,}
+			xangle_max=${cfg%%,*}
+			cfg=${cfg#*,}
+			beta_min=${cfg%%,*}
+			cfg=${cfg#*,}
+			beta_max=${cfg%%,*}
+
+			cfgd="$fd/$tag"
+
+			mkdir -p "$cfgd"
+
+			cp "$fd/selection.json" "$cfgd/"
+
+			cat "$topDir/template_cfg.py" | sed -e "\
+					/\$input_file_commands/ { r $fd/input_file_commands" -e " d };\
+					s|\$json_file|$streamd/$cfgd/selection.json|;\
+					s|\$xangle_min|$xangle_min|;\
+					s|\$xangle_max|$xangle_max|;\
+					s|\$beta_min|$beta_min|;\
+					s|\$beta_max|$beta_max|;\
+					s|\$output_file|output.root|;\
+				" > "$cfgd/cfg.py"
+
+			cat "$topDir/template_job" | sed "\
+					s|\$WORK_DIR|$streamd/$cfgd|;\
+					s|\$CMSSW_DIR|$CMSSW_BASE|;\
+					s|\$EXEC_SUB_DIR|fill_$fill/$stream/$tag|;\
+					s|\$OUTPUT_DIR|$output_dir|;\
+					s|\$OUTPUT_TAG|fill${fill}_${tag}_${stream}|;\
+				" > "$cfgd/job"
+
+			chmod u+x "$cfgd/job"
+
+			cat "$topDir/template_CheckRootFile.cc" | sed "\
+					s|\$file|output.root|;\
+				" > "$cfgd/CheckRootFile.cc"
+		done
+	done
+}
+
+#----------------------------------------------------------------------------------------------------
+
+function RunOneDataset
+{
+	ProcessOneDataset "$1" #&
+}
+
+#----------------------------------------------------------------------------------------------------
+
+make || exit 1
+
+# settings
+
+output_dir="/eos/cms/store/group/phys_pps/reconstruction/2017/physics_runs/version-UL-1"
+
+configs=(
+	"xangle120_beta0.40,119,121,0.39,0.41"
+	"xangle130_beta0.40,129,131,0.39,0.41"
+	"xangle140_beta0.40,139,141,0.39,0.41"
+	"xangle150_beta0.40,149,151,0.39,0.41"
+)
+
+RunOneDataset "/DoubleEG/Run2017B-09Aug2019_UL2017-v1/AOD"
+RunOneDataset "/DoubleEG/Run2017C-09Aug2019_UL2017-v1/AOD"
+RunOneDataset "/DoubleEG/Run2017D-09Aug2019_UL2017-v1/AOD"
+
+configs=(
+	"xangle120_beta0.30,119,121,0.29,0.31"
+	"xangle130_beta0.30,129,131,0.29,0.31"
+	"xangle140_beta0.30,139,141,0.29,0.31"
+	"xangle150_beta0.30,149,151,0.29,0.31"
+)
+
+RunOneDataset "/DoubleEG/Run2017E-09Aug2019_UL2017-v1/AOD"
+RunOneDataset "/DoubleEG/Run2017F-09Aug2019_UL2017-v1/AOD"
+
+output_dir="/eos/cms/store/group/phys_pps/reconstruction/2018/physics_runs/version-UL-1"
+
+configs=(
+	"xangle130_beta0.25,129.9,130.1,0.24,0.26"
+
+	"xangle130_beta0.30,129.9,130.1,0.29,0.31"
+	"xangle138_beta0.30,130.1,145.0,0.29,0.31"
+	"xangle152_beta0.30,145.0,159.9,0.29,0.31"
+	"xangle160_beta0.30,159.9,160.1,0.29,0.31"
+)
+
+RunOneDataset "/EGamma/Run2018A-12Nov2019_UL2018-v2/AOD"
+RunOneDataset "/EGamma/Run2018B-12Nov2019_UL2018-v2/AOD"
+RunOneDataset "/EGamma/Run2018C-12Nov2019_UL2018-v2/AOD"
+RunOneDataset "/EGamma/Run2018D-12Nov2019_UL2018-v4/AOD"

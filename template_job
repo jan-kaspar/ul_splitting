@@ -1,0 +1,137 @@
+#!/bin/sh
+export HOME="/afs/cern.ch/exp/totem/scratch/jkaspar"
+
+work_dir="$WORK_DIR"
+
+date > "$work_dir/submitted"
+
+job_dir=`pwd -P`
+echo "job_dir=$job_dir"
+
+source "/cvmfs/cms.cern.ch/cmsset_default.sh"
+cd "$CMSSW_DIR"
+cmsenv
+
+export CMSSW_SEARCH_PATH="$CMSSW_SEARCH_PATH:/afs/cern.ch/work/j/jkaspar/work/software/ctpps/user/data"
+export CMSSW_DATA_PATH="/afs/cern.ch/work/j/jkaspar"
+
+# grid proxy configuration
+export X509_USER_PROXY="/afs/cern.ch/user/j/jkaspar/x509up_u2177"
+
+voms-proxy-info
+
+function SafeCmd()
+{
+	echo ""
+	echo ">> SafeCmd: $@"
+	for i in {1..60}
+	do
+		echo "* attempt $i:"
+		"$@" && return 0
+		sleep 5
+	done
+	echo "* giving up..."
+	return 1
+}
+
+
+function RemoteMkdir()
+{
+	local dir="$1"
+
+	if [[ "$dir" == "/eos/"* ]]
+	then
+		eos mkdir -p "$dir"
+		return
+	fi
+
+	if [[ "$dir" == "/castor/"* ]]
+	then
+		rfmkdir -p "$dir"
+		return
+	fi
+
+	mkdir -p "$dir"
+}
+
+
+function RemoteCopy()
+{
+	local src="$1"
+	local dst="$2"
+
+	if [[ "$dst" == "/eos/"* ]]
+	then
+		eos cp "$src" "$dst"
+		return
+	fi
+
+	if [[ "$dst" == "/castor/"* ]]
+	then
+		rfcp "$src" "$dst"
+		return
+	fi
+
+	cp "$src" "$dst"
+}
+
+exec_dir="$job_dir/$EXEC_SUB_DIR"
+mkdir -p "$exec_dir"
+cd "$exec_dir"
+
+# run CMSSW
+(
+    echo "--------------------"
+    echo "CMSSW version: $CMSSW_VERSION"
+    echo "CMSSW installation: $CMSSW_BASE"
+    echo start: `date`
+    echo "--------------------"
+    cmsRun "$work_dir/cfg.py"
+    rc=$?
+    echo "--------------------"
+    echo end: `date`
+    exit $rc
+) &> "$work_dir/log"
+rc=$?
+if [ $rc -ne 0 ]
+then
+    echo "cmsRun crashed: return code = $rc"
+    date > "$work_dir/finished"
+    exit 1
+fi
+
+# check ROOT file consistency
+root -b -q -l "$work_dir/CheckRootFile.cc" 2> /dev/null
+rc=$?
+
+if [ $rc -eq 1 ] || [ $rc -eq 2 ]
+then
+    echo "The reco file is corrupted, you will need to rerun this job."
+fi
+
+if [ $rc -eq 10 ]
+then
+    echo "The reco file is empty, nothing will be copied."
+    
+	date > "$work_dir/success"
+	date > "$work_dir/empty"
+fi
+
+if [ $rc -eq 0 ]
+then
+    # workaround for problems with eos cp
+    export LD_LIBRARY_PATH=""
+    
+    success=1
+    outputDir="$OUTPUT_DIR"
+    RemoteMkdir "$outputDir"
+    SafeCmd RemoteCopy "$work_dir/cfg.py" "$outputDir/$OUTPUT_TAG_cfg.py" || success=0
+    SafeCmd RemoteCopy "$work_dir/log" "$outputDir/$OUTPUT_TAG.log" || success=0
+    SafeCmd RemoteCopy "output.root" "$outputDir/$OUTPUT_TAG.root" || success=0
+    if [ $success -eq 1 ]
+    then
+        date > "$work_dir/success"
+    fi
+fi
+
+date > "$work_dir/finished"
