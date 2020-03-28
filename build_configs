@@ -151,7 +151,7 @@ make || exit 1
 
 # settings
 
-output_dir="/eos/cms/store/group/phys_pps/reconstruction/2017/physics_runs/version-UL-1"
+output_dir="/eos/cms/store/group/phys_pps/reconstruction/2017/physics_runs/version-UL-2"
 
 configs=(
 	"xangle120_beta0.40,119,121,0.39,0.41"
@@ -174,14 +174,16 @@ configs=(
 RunOneDataset "/DoubleEG/Run2017E-09Aug2019_UL2017-v1/AOD"
 RunOneDataset "/DoubleEG/Run2017F-09Aug2019_UL2017-v1/AOD"
 
-output_dir="/eos/cms/store/group/phys_pps/reconstruction/2018/physics_runs/version-UL-1"
+output_dir="/eos/cms/store/group/phys_pps/reconstruction/2018/physics_runs/version-UL-2"
 
 configs=(
 	"xangle130_beta0.25,129.9,130.1,0.24,0.26"
 
 	"xangle130_beta0.30,129.9,130.1,0.29,0.31"
-	"xangle138_beta0.30,130.1,145.0,0.29,0.31"
-	"xangle152_beta0.30,145.0,159.9,0.29,0.31"
+	#"xangle138_beta0.30,130.1,145.0,0.29,0.31"
+	"xangle140_beta0.30,139.9,140.1,0.29,0.31"
+	"xangle150_beta0.30,149.9,150.1,0.29,0.31"
+	#"xangle152_beta0.30,145.0,159.9,0.29,0.31"
 	"xangle160_beta0.30,159.9,160.1,0.29,0.31"
 )
 
