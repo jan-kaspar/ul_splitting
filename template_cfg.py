@@ -21,8 +21,8 @@ process.source = cms.Source("PoolSource",
 
   inputCommands = cms.untracked.vstring(
     'drop *',
-    'keep TotemRPDigiedmDetSetVector_*_*_*',
-    'keep CTPPSPixelDigiedmDetSetVector_*_*_*',
+    'keep TotemRPRecHitedmDetSetVector_*_*_*',
+    'keep CTPPSPixelRecHitedmDetSetVector_*_*_*',
     'keep CTPPSDiamondDigiedmDetSetVector_*_*_*',
 
     'keep CTPPSLocalTrackLites_*_*_*',
