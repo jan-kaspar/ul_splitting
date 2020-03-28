@@ -86,11 +86,12 @@ function ProcessOneDataset()
 		fill=${fd#fill_}
 
 		# prepare input_commands
-		echo "" > "$fd/input_file_commands"
+		(
 		for file in `cat $fd/files`
 		do
-			echo "process.source.fileNames.append(\"$file\")" >> "$fd/input_file_commands"
+			echo "process.source.fileNames.append(\"$file\")"
 		done
+		) > "$fd/input_file_commands"
 
 		# loop over configs
 		for cfg in ${configs[*]}
