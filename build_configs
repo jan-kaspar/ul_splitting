@@ -157,7 +157,7 @@ make || exit 1
 output_dir="/eos/cms/store/group/phys_pps/reconstruction/2016/physics_runs/version-UL-2"
 
 configs=(
-	"xangle185_beta0.30,184,186,0.29,0.31"
+	"xangle185_beta0.40,184,186,0.39,0.41"
 )
 
 RunOneDataset "/DoubleEG/Run2016B-21Feb2020_UL2016_HIPM-v1/AOD"
@@ -165,7 +165,7 @@ RunOneDataset "/DoubleEG/Run2016C-21Feb2020_UL2016_HIPM-v1/AOD"
 RunOneDataset "/DoubleEG/Run2016G-21Feb2020_UL2016-v1/AOD"
 
 configs=(
-	"xangle140_beta0.30,139,141,0.29,0.31"
+	"xangle140_beta0.40,139,141,0.39,0.41"
 )
 
 RunOneDataset "/DoubleEG/Run2016H-21Feb2020_UL2016-v1/AOD"
