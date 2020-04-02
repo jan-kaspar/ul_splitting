@@ -150,7 +150,29 @@ function RunOneDataset
 
 make || exit 1
 
-# settings
+
+
+# ----- 2016 settings -----
+
+output_dir="/eos/cms/store/group/phys_pps/reconstruction/2016/physics_runs/version-UL-2"
+
+configs=(
+	"xangle185_beta0.30,184,186,0.29,0.31"
+)
+
+RunOneDataset "/DoubleEG/Run2016B-21Feb2020_UL2016_HIPM-v1/AOD"
+RunOneDataset "/DoubleEG/Run2016C-21Feb2020_UL2016_HIPM-v1/AOD"
+RunOneDataset "/DoubleEG/Run2016G-21Feb2020_UL2016-v1/AOD"
+
+configs=(
+	"xangle140_beta0.30,139,141,0.29,0.31"
+)
+
+RunOneDataset "/DoubleEG/Run2016H-21Feb2020_UL2016-v1/AOD"
+
+
+
+# ----- 2017 settings -----
 
 output_dir="/eos/cms/store/group/phys_pps/reconstruction/2017/physics_runs/version-UL-2"
 
@@ -161,9 +183,9 @@ configs=(
 	"xangle150_beta0.40,149,151,0.39,0.41"
 )
 
-RunOneDataset "/DoubleEG/Run2017B-09Aug2019_UL2017-v1/AOD"
-RunOneDataset "/DoubleEG/Run2017C-09Aug2019_UL2017-v1/AOD"
-RunOneDataset "/DoubleEG/Run2017D-09Aug2019_UL2017-v1/AOD"
+#RunOneDataset "/DoubleEG/Run2017B-09Aug2019_UL2017-v1/AOD"
+#RunOneDataset "/DoubleEG/Run2017C-09Aug2019_UL2017-v1/AOD"
+#RunOneDataset "/DoubleEG/Run2017D-09Aug2019_UL2017-v1/AOD"
 
 configs=(
 	"xangle120_beta0.30,119,121,0.29,0.31"
@@ -172,8 +194,12 @@ configs=(
 	"xangle150_beta0.30,149,151,0.29,0.31"
 )
 
-RunOneDataset "/DoubleEG/Run2017E-09Aug2019_UL2017-v1/AOD"
-RunOneDataset "/DoubleEG/Run2017F-09Aug2019_UL2017-v1/AOD"
+#RunOneDataset "/DoubleEG/Run2017E-09Aug2019_UL2017-v1/AOD"
+#RunOneDataset "/DoubleEG/Run2017F-09Aug2019_UL2017-v1/AOD"
+
+
+
+# ----- 2018 settings -----
 
 output_dir="/eos/cms/store/group/phys_pps/reconstruction/2018/physics_runs/version-UL-2"
 
@@ -188,7 +214,7 @@ configs=(
 	"xangle160_beta0.30,159.9,160.1,0.29,0.31"
 )
 
-RunOneDataset "/EGamma/Run2018A-12Nov2019_UL2018-v2/AOD"
-RunOneDataset "/EGamma/Run2018B-12Nov2019_UL2018-v2/AOD"
-RunOneDataset "/EGamma/Run2018C-12Nov2019_UL2018-v2/AOD"
-RunOneDataset "/EGamma/Run2018D-12Nov2019_UL2018-v4/AOD"
+#RunOneDataset "/EGamma/Run2018A-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/EGamma/Run2018B-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/EGamma/Run2018C-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/EGamma/Run2018D-12Nov2019_UL2018-v4/AOD"
