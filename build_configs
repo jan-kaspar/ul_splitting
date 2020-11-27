@@ -223,11 +223,11 @@ configs=(
 	"xangle160_beta0.30,159.9,160.1,0.29,0.31"
 )
 
-#for stream in EGamma
-for stream in JetHT SingleMuon Charmonium Tau ZeroBias
+#for stream in EGamma JetHT SingleMuon ZeroBias DoubleMuon
+for stream in JetHT
 do
-	RunOneDataset "/$stream/Run2018A-12Nov2019_UL2018-v2/AOD"
-	#RunOneDataset "/$stream/Run2018B-12Nov2019_UL2018-v2/AOD"
-	#RunOneDataset "/$stream/Run2018C-12Nov2019_UL2018-v2/AOD"
-	#RunOneDataset "/$stream/Run2018D-12Nov2019_UL2018-v4/AOD"
+	#RunOneDataset "/$stream/Run2018A-12Nov2019_UL2018-v2/AOD"
+	RunOneDataset "/$stream/Run2018B-12Nov2019_UL2018-v2/AOD"
+	RunOneDataset "/$stream/Run2018C-12Nov2019_UL2018-v2/AOD"
+	RunOneDataset "/$stream/Run2018D-12Nov2019_UL2018-v4/AOD"
 done
