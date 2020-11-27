@@ -6,6 +6,8 @@ dataDir="data"
 
 resetBuffers="0"
 
+doNothing="0"
+
 #----------------------------------------------------------------------------------------------------
 
 function GetInputFiles()
@@ -45,6 +47,11 @@ function ProcessOneDataset()
 	era="${era%%-*}"
 
 	echo "* $stream, $era"
+
+	if [ "$doNothing" -eq "1" ]
+	then
+		return 1
+	fi
 
 	cd "$topDir"
 
@@ -223,11 +230,57 @@ configs=(
 	"xangle160_beta0.30,159.9,160.1,0.29,0.31"
 )
 
-#for stream in EGamma JetHT SingleMuon ZeroBias DoubleMuon
-for stream in JetHT
-do
-	#RunOneDataset "/$stream/Run2018A-12Nov2019_UL2018-v2/AOD"
-	RunOneDataset "/$stream/Run2018B-12Nov2019_UL2018-v2/AOD"
-	RunOneDataset "/$stream/Run2018C-12Nov2019_UL2018-v2/AOD"
-	RunOneDataset "/$stream/Run2018D-12Nov2019_UL2018-v4/AOD"
-done
+## RunOneDataset "/BTagMu/Run2018A-12Nov2019_UL2018-v1/AOD"
+## RunOneDataset "/BTagMu/Run2018B-12Nov2019_UL2018-v1/AOD"
+## #RunOneDataset "/BTagMu/Run2018C-12Nov2019_UL2018-v1/AOD" --> tape only
+## RunOneDataset "/BTagMu/Run2018D-12Nov2019_UL2018-v1/AOD"
+
+## RunOneDataset "/Charmonium/Run2018A-12Nov2019_UL2018_rsb-v1/AOD"
+## RunOneDataset "/Charmonium/Run2018B-12Nov2019_UL2018-v1/AOD"
+## RunOneDataset "/Charmonium/Run2018C-12Nov2019_UL2018_rsb_v2-v2/AOD"
+## #RunOneDataset "/Charmonium/Run2018D-12Nov2019_UL2018-v1/AOD" --> blocks incomplete?
+
+##RunOneDataset "/DoubleMuon/Run2018A-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/DoubleMuon/Run2018B-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/DoubleMuon/Run2018C-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/DoubleMuon/Run2018D-12Nov2019_UL2018-v3/AOD"
+
+#	RunOneDataset "/EGamma/Run2018A-12Nov2019_UL2018-v2/AOD"
+#	RunOneDataset "/EGamma/Run2018B-12Nov2019_UL2018-v2/AOD"
+#	RunOneDataset "/EGamma/Run2018C-12Nov2019_UL2018-v2/AOD"
+#	RunOneDataset "/EGamma/Run2018D-12Nov2019_UL2018-v4/AOD"
+
+#RunOneDataset "/JetHT/Run2018A-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/JetHT/Run2018B-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/JetHT/Run2018C-12Nov2019_UL2018_rsb-v1/AOD" # on tape only
+#RunOneDataset "/JetHT/Run2018D-12Nov2019_UL2018_rsb-v1/AOD"
+
+#RunOneDataset "/MET/Run2018A-12Nov2019_UL2018_rsb-v1/AOD"
+##RunOneDataset "/MET/Run2018B-12Nov2019_UL2018_rsb-v1/AOD" # on tape only
+#RunOneDataset "/MET/Run2018C-12Nov2019_UL2018_rsb-v1/AOD"
+##RunOneDataset "/MET/Run2018D-12Nov2019_UL2018_rsb-v2/AOD" # on tape only
+
+##RunOneDataset "/MuOnia/Run2018A-12Nov2019_UL2018-v1/AOD" # on tape only
+#RunOneDataset "/MuOnia/Run2018B-12Nov2019_UL2018-v1/AOD"
+##RunOneDataset "/MuOnia/Run2018C-12Nov2019_UL2018-v1/AOD" # on tape only
+#RunOneDataset "/MuOnia/Run2018D-12Nov2019_UL2018-v1/AOD" 
+
+#RunOneDataset "/MuonEG/Run2018A-12Nov2019_UL2018_rsb-v1/AOD"
+##RunOneDataset "/MuonEG/Run2018B-12Nov2019_UL2018-v1/AOD" # on tape only
+##RunOneDataset "/MuonEG/Run2018C-12Nov2019_UL2018-v1/AOD" # on tape only
+##RunOneDataset "/MuonEG/Run2018D-12Nov2019_UL2018_rsb-v1/AOD" # on tape only
+
+##RunOneDataset "/SingleMuon/Run2018A-12Nov2019_UL2018_rsb-v1/AOD" # some blocks possibly missing
+#RunOneDataset "/SingleMuon/Run2018B-12Nov2019_UL2018-v2/AOD" # low file percentage
+#RunOneDataset "/SingleMuon/Run2018C-12Nov2019_UL2018-v2/AOD" # essentially no files available
+#RunOneDataset "/SingleMuon/Run2018D-12Nov2019_UL2018-v4/AOD"
+
+#RunOneDataset "/Tau/Run2018A-12Nov2019_UL2018_rsb-v1/AOD"
+#RunOneDataset "/Tau/Run2018B-12Nov2019_UL2018-v1/AOD" # on tape only
+#RunOneDataset "/Tau/Run2018C-12Nov2019_UL2018-v1/AOD"
+#RunOneDataset "/Tau/Run2018D-12Nov2019_UL2018-v1/AOD" # on tape only
+
+##RunOneDataset "/ZeroBias/Run2018A-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/ZeroBias/Run2018B-12Nov2019_UL2018-v2/AOD"
+#RunOneDataset "/ZeroBias/Run2018C-12Nov2019_UL2018_rsb-v1/AOD"
+#RunOneDataset "/ZeroBias/Run2018D-12Nov2019_UL2018_rsb-v1/AOD"
