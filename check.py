@@ -84,14 +84,20 @@ def MakeOneCheck(year, datasets):
 
 MakeOneCheck("2016", [
     "DoubleEG",
-    "SingleMuon"
+    "JetHT",
+    "SingleElectron",
+    "SingleMuon",
+    "ZeroBias"
 ])
 
 #----------------------------------------------------------------------------------------------------
 
 MakeOneCheck("2017", [
     "DoubleEG",
-    "SingleMuon"
+    "MET",
+    "SingleElectron",
+    "SingleMuon",
+    "ZeroBias"
 ])
 
 #----------------------------------------------------------------------------------------------------
